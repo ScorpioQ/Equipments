@@ -1,14 +1,19 @@
 import Foundation
+import Combine
 
 /// 数据管理器
 /// 负责处理所有数据的CRUD操作，以及导入导出功能
 @MainActor
-class DataManager {
+class DataManager: ObservableObject {
+    /// 单例实例
     static let shared = DataManager()
     
-    private var playTypes: [PlayType] = []
-    private var equipments: [Equipment] = []
-    private var categories: [Category] = []
+    /// 所有场景数据
+    @Published private var playTypes: [PlayType] = []
+    /// 所有装备数据
+    @Published private var equipments: [Equipment] = []
+    /// 所有分类数据
+    @Published private var categories: [Category] = []
     
     private let fileManager = FileManager.default
     private let decoder = JSONDecoder()
@@ -32,6 +37,59 @@ class DataManager {
     
     private init() {
         loadData()
+        
+        // 如果没有数据，添加一些预设数据
+        if playTypes.isEmpty {
+            do {
+                // 创建预设场景
+                let basketball = try createPlayType(name: "篮球", desc: "篮球运动相关装备", icon: "basketball.fill")
+                let hiking = try createPlayType(name: "徒步", desc: "户外徒步相关装备", icon: "figure.hiking")
+                let camping = try createPlayType(name: "露营", desc: "野营相关装备", icon: "tent.fill")
+                
+                // 创建预设装备
+                _ = try createEquipment(
+                    name: "Nike Zoom GT Jump",
+                    brand: "Nike",
+                    model: "DC9834-400",
+                    desc: "实战篮球鞋",
+                    price: 139900,  // 1399.00元
+                    purchaseDate: Calendar.current.date(byAdding: .day, value: -60, to: Date()),
+                    playTypeId: basketball.id
+                )
+                
+                _ = try createEquipment(
+                    name: "Wilson 篮球",
+                    brand: "Wilson",
+                    model: "WTB0118IB07",
+                    desc: "室内外通用篮球",
+                    price: 39900,   // 399.00元
+                    purchaseDate: Calendar.current.date(byAdding: .day, value: -30, to: Date()),
+                    playTypeId: basketball.id
+                )
+                
+                _ = try createEquipment(
+                    name: "探路者登山鞋",
+                    brand: "TOREAD",
+                    model: "TFAI91031",
+                    desc: "防水透气登山鞋",
+                    price: 59900,   // 599.00元
+                    purchaseDate: Calendar.current.date(byAdding: .day, value: -90, to: Date()),
+                    playTypeId: hiking.id
+                )
+                
+                _ = try createEquipment(
+                    name: "牧高笛帐篷",
+                    brand: "MOBI GARDEN",
+                    model: "NXZQU61008",
+                    desc: "三季帐，2-3人",
+                    price: 99900,   // 999.00元
+                    purchaseDate: Calendar.current.date(byAdding: .day, value: -120, to: Date()),
+                    playTypeId: camping.id
+                )
+            } catch {
+                print("Error creating preset data: \(error)")
+            }
+        }
     }
     
     // MARK: - Data Loading and Saving
@@ -69,16 +127,42 @@ class DataManager {
     
     // MARK: - PlayType CRUD Operations
     
-    func createPlayType(name: String, description: String = "", icon: String = "mountain.2") throws -> PlayType {
-        let playType = PlayType(name: name, desc: description, icon: icon)
-        try playType.validate()
+    /// 创建新场景
+    /// - Parameters:
+    ///   - name: 场景名称
+    ///   - desc: 场景描述
+    ///   - icon: 场景图标
+    /// - Returns: 创建的场景
+    func createPlayType(name: String, desc: String = "", icon: String = "tag") throws -> PlayType {
+        // 验证输入
+        if name.isEmpty {
+            throw ValidationError.emptyName
+        }
+        
+        // 检查名称是否重复
+        if playTypes.contains(where: { $0.name == name }) {
+            throw ValidationError.duplicateValue("场景名称已存在")
+        }
+        
+        // 创建新场景
+        let playType = PlayType(name: name, desc: desc, icon: icon)
         playTypes.append(playType)
-        saveData()
+        
+        // 保存数据
+        try saveData()
+        
         return playType
     }
     
     func getAllPlayTypes() -> [PlayType] {
         return playTypes
+    }
+    
+    /// 根据ID获取场景
+    /// - Parameter id: 场景ID
+    /// - Returns: 场景，如果不存在则返回nil
+    func getPlayType(by id: UUID) -> PlayType? {
+        return playTypes.first { $0.id == id }
     }
     
     func updatePlayType(_ playType: PlayType) throws {
@@ -106,11 +190,25 @@ class DataManager {
     
     // MARK: - Equipment CRUD Operations
     
+    /// 创建新装备
+    /// - Parameters:
+    ///   - name: 装备名称
+    ///   - brand: 品牌
+    ///   - model: 型号
+    ///   - desc: 描述
+    ///   - price: 价格（单位：分）
+    ///   - purchaseDate: 购买日期
+    ///   - images: 图片
+    ///   - categoryId: 所属分类ID
+    ///   - playTypeId: 所属场景ID
+    ///   - notes: 备注
+    ///   - rating: 评分
+    /// - Returns: 创建的装备
     func createEquipment(name: String,
                         brand: String = "",
                         model: String = "",
-                        description: String = "",
-                        price: Decimal = 0,
+                        desc: String = "",
+                        price: Int = 0,
                         purchaseDate: Date? = nil,
                         images: [String] = [],
                         categoryId: UUID? = nil,
@@ -120,7 +218,7 @@ class DataManager {
         let equipment = Equipment(name: name,
                                 brand: brand,
                                 model: model,
-                                desc: description,
+                                desc: desc,
                                 price: price,
                                 purchaseDate: purchaseDate,
                                 images: images,
@@ -130,7 +228,10 @@ class DataManager {
                                 rating: rating)
         try equipment.validate()
         equipments.append(equipment)
-        saveData()
+        
+        // 保存数据
+        try saveData()
+        
         return equipment
     }
     
@@ -146,13 +247,18 @@ class DataManager {
         return equipments.filter { $0.categoryId == category.id }
     }
     
+    /// 更新装备
     func updateEquipment(_ equipment: Equipment) throws {
+        // 验证数据
         try equipment.validate()
+        
+        // 查找并更新装备
         if let index = equipments.firstIndex(where: { $0.id == equipment.id }) {
-            var updatedEquipment = equipment
-            updatedEquipment.updatedAt = Date()
-            equipments[index] = updatedEquipment
-            saveData()
+            equipments[index] = equipment
+            // 保存数据
+            try saveData()
+        } else {
+            throw ValidationError.equipmentNotFound
         }
     }
     
@@ -163,11 +269,30 @@ class DataManager {
     
     // MARK: - Category CRUD Operations
     
-    func createCategory(name: String, icon: String = "tag") throws -> Category {
-        let category = Category(name: name, icon: icon)
-        try category.validate()
+    /// 创建新分类
+    /// - Parameters:
+    ///   - name: 分类名称
+    ///   - desc: 分类描述
+    ///   - icon: 分类图标
+    /// - Returns: 创建的分类
+    func createCategory(name: String, desc: String = "", icon: String = "tag") throws -> Category {
+        // 验证输入
+        if name.isEmpty {
+            throw ValidationError.emptyName
+        }
+        
+        // 检查名称是否重复
+        if categories.contains(where: { $0.name == name }) {
+            throw ValidationError.duplicateValue("分类名称已存在")
+        }
+        
+        // 创建新分类
+        let category = Category(name: name, desc: desc, icon: icon)
         categories.append(category)
-        saveData()
+        
+        // 保存数据
+        try saveData()
+        
         return category
     }
     

@@ -26,7 +26,7 @@ struct Equipment: Codable, Identifiable, Hashable {
     var brand: String               // 品牌名称
     var model: String               // 型号
     var desc: String                // 装备描述
-    var price: Decimal              // 购买价格
+    var price: Int                  // 购买价格（单位：分）
     var purchaseDate: Date?         // 购买日期（可选）
     var images: [String]            // 装备图片路径数组
     var categoryId: UUID?           // 所属分类ID（可选）
@@ -41,7 +41,7 @@ struct Equipment: Codable, Identifiable, Hashable {
          brand: String = "",
          model: String = "",
          desc: String = "",
-         price: Decimal = 0,
+         price: Int = 0,            // 价格，单位：分
          purchaseDate: Date? = nil,
          images: [String] = [],
          categoryId: UUID? = nil,
@@ -69,13 +69,15 @@ struct Equipment: Codable, Identifiable, Hashable {
 struct Category: Codable, Identifiable, Hashable {
     var id: UUID
     var name: String                // 分类名称
+    var desc: String                // 分类描述
     var icon: String                // 分类图标名称（SF Symbols名称）
     var createdAt: Date             // 记录创建时间
     var updatedAt: Date             // 记录最后更新时间
     
-    init(id: UUID = UUID(), name: String, icon: String = "tag") {
+    init(id: UUID = UUID(), name: String, desc: String = "", icon: String = "tag") {
         self.id = id
         self.name = name
+        self.desc = desc
         self.icon = icon
         self.createdAt = Date()
         self.updatedAt = Date()
@@ -103,6 +105,27 @@ extension Equipment: Validatable {
         }
         for path in images {
             guard !path.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                throw ValidationError.invalidImagePath
+            }
+        }
+        // 验证名称
+        if name.isEmpty {
+            throw ValidationError.emptyName
+        }
+        
+        // 验证价格
+        if price < 0 {
+            throw ValidationError.invalidPrice
+        }
+        
+        // 验证评分
+        if rating < 0 || rating > 5 {
+            throw ValidationError.invalidRating
+        }
+        
+        // 验证图片路径
+        for path in images {
+            if !FileManager.default.fileExists(atPath: path) {
                 throw ValidationError.invalidImagePath
             }
         }
