@@ -11,12 +11,15 @@ struct EquipmentHomeView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                // 左侧场景标签栏
                 PlayTypeTabBar(
                     selectedPlayTypeId: $selectedPlayTypeId,
                     showAddPlayType: $showAddPlayType
                 )
+                .frame(width: UIScreen.main.bounds.width / 5)
                 
+                // 右侧装备列表
                 EquipmentContent(selectedPlayTypeId: selectedPlayTypeId)
             }
             .navigationTitle("装备党")
@@ -41,8 +44,8 @@ private struct PlayTypeTabBar: View {
     @Binding var showAddPlayType: Bool
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: -15) {
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: 12) {
                 // 场景标签
                 ForEach(dataManager.getAllPlayTypes()) { playType in
                     PlayTypeTabButton(
@@ -67,11 +70,11 @@ private struct PlayTypeTabBar: View {
                         .background(.ultraThinMaterial)
                         .clipShape(Circle())
                 }
-                .padding(.leading)
+                .padding(.top, 8)
             }
-            .padding(.horizontal)
+            .padding(.vertical)
         }
-        .padding(.vertical, 8)
+        .background(.ultraThinMaterial)
     }
 }
 

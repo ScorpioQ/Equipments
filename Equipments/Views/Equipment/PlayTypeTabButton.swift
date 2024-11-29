@@ -27,16 +27,15 @@ struct PlayTypeTabButton: View {
     
     var body: some View {
         Button(action: action) {
-            HStack {
-                // 场景图标
-                Image(systemName: playType.icon)
-                    .font(.title3)
-                
-                // 场景名称
-                Text(playType.name)
-                    .font(.headline)
-                
-                Spacer()
+            VStack(alignment: .leading, spacing: 4) {
+                // 场景图标和名称
+                HStack {
+                    Image(systemName: playType.icon)
+                        .font(.title3)
+                    
+                    Text(playType.name)
+                        .font(.headline)
+                }
                 
                 // 装备数量
                 Text("\(equipmentCount)")
@@ -46,17 +45,27 @@ struct PlayTypeTabButton: View {
                     .background(Color(.systemGray6))
                     .clipShape(Capsule())
             }
-            .padding(.horizontal)
-            .frame(width: 160, height: 44)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity)
             .background(backgroundColor)
-            .clipShape(PlayTypeTabShape())
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+            )
+            .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in isPressed = true }
-                .onEnded { _ in isPressed = false }
-        )
+        .buttonStyle(PlayTypeButtonStyle())
+    }
+}
+
+/// 自定义按钮样式
+private struct PlayTypeButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
     }
 }
 
