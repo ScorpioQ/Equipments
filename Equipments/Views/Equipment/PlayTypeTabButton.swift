@@ -26,7 +26,11 @@ struct PlayTypeTabButton: View {
     }
     
     var body: some View {
-        Button(action: action) {
+        Button {
+            HapticManager.shared.lightImpact()
+            SoundManager.shared.playTick()
+            action()
+        } label: {
             VStack(alignment: .leading, spacing: 4) {
                 // 场景图标和名称
                 HStack {
