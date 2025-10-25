@@ -16,7 +16,7 @@ struct PersistenceController {
         let controller = PersistenceController(inMemory: true)
         let context = controller.container.viewContext
 
-        let basketball = Scene(context: context)
+        let basketball = EquipmentScene(context: context)
         basketball.id = UUID()
         basketball.name = "篮球装备"
         basketball.summary = "打球必备"

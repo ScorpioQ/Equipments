@@ -22,7 +22,7 @@ public extension Equipment {
     @NSManaged var notes: String?
     @NSManaged var imageData: Data?
     @NSManaged var createdAt: Date?
-    @NSManaged var scene: Scene?
+    @NSManaged var scene: EquipmentScene?
 }
 
 public extension Equipment {

@@ -9,9 +9,9 @@
         <attribute name="notes" optional="YES" attributeType="String"/>
         <attribute name="purchaseDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="purchasePrice" optional="NO" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="scene" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Scene" inverseName="equipments" inverseEntity="Scene"/>
+        <relationship name="scene" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EquipmentScene" inverseName="equipments" inverseEntity="EquipmentScene"/>
     </entity>
-    <entity name="Scene" representedClassName="Scene" syncable="YES">
+    <entity name="EquipmentScene" representedClassName="EquipmentScene" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="icon" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
@@ -21,6 +21,6 @@
     </entity>
     <elements>
         <element name="Equipment" positionX="160" positionY="160" width="128" height="180"/>
-        <element name="Scene" positionX="160" positionY="16" width="128" height="148"/>
+        <element name="EquipmentScene" positionX="160" positionY="16" width="128" height="148"/>
     </elements>
 </model>

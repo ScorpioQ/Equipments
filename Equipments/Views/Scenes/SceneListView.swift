@@ -12,10 +12,10 @@ struct SceneListView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Scene.createdAt, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \EquipmentScene.createdAt, ascending: true)],
         animation: .default
     )
-    private var scenes: FetchedResults<Scene>
+    private var scenes: FetchedResults<EquipmentScene>
 
     @State private var isPresentingCreateSheet = false
 
@@ -60,7 +60,7 @@ struct SceneListView: View {
                 }
             }
             .navigationDestination(for: NSManagedObjectID.self) { objectID in
-                if let scene = try? viewContext.existingObject(with: objectID) as? Scene {
+                if let scene = try? viewContext.existingObject(with: objectID) as? EquipmentScene {
                     SceneDetailView(scene: scene)
                 } else {
                     Text("无法找到场景")
@@ -70,7 +70,7 @@ struct SceneListView: View {
     }
 
     private func addScene(name: String, summary: String) {
-        let newScene = Scene(context: viewContext)
+        let newScene = EquipmentScene(context: viewContext)
         newScene.id = UUID()
         newScene.name = name
         newScene.summary = summary

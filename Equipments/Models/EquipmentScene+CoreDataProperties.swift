@@ -1,5 +1,5 @@
 //
-//  Scene+CoreDataProperties.swift
+//  EquipmentScene+CoreDataProperties.swift
 //  Equipments
 //
 //  Created by AI on 2024/11/23.
@@ -8,10 +8,10 @@
 import Foundation
 import CoreData
 
-public extension Scene {
+public extension EquipmentScene {
     @nonobjc
-    class func fetchRequest() -> NSFetchRequest<Scene> {
-        NSFetchRequest<Scene>(entityName: "Scene")
+    class func fetchRequest() -> NSFetchRequest<EquipmentScene> {
+        NSFetchRequest<EquipmentScene>(entityName: "EquipmentScene")
     }
 
     @NSManaged var id: UUID?
@@ -22,7 +22,7 @@ public extension Scene {
     @NSManaged var equipments: NSSet?
 }
 
-public extension Scene {
+public extension EquipmentScene {
     var wrappedID: UUID {
         if let id {
             return id
@@ -60,7 +60,7 @@ public extension Scene {
 }
 
 // MARK: Generated accessors for equipments
-public extension Scene {
+public extension EquipmentScene {
     @objc(addEquipmentsObject:)
     @NSManaged func addToEquipments(_ value: Equipment)
 
@@ -74,4 +74,4 @@ public extension Scene {
     @NSManaged func removeFromEquipments(_ values: NSSet)
 }
 
-extension Scene: Identifiable {}
+extension EquipmentScene: Identifiable {}

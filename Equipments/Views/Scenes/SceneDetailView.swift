@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct SceneDetailView: View {
-    @ObservedObject var scene: Scene
+    @ObservedObject var scene: EquipmentScene
     @Environment(\.managedObjectContext) private var viewContext
 
     @State private var isPresentingEquipmentSheet = false
@@ -61,7 +61,7 @@ struct SceneDetailView: View {
 }
 
 private struct SceneSummaryView: View {
-    @ObservedObject var scene: Scene
+    @ObservedObject var scene: EquipmentScene
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -91,7 +91,7 @@ private struct EquipmentFormView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
 
-    var scene: Scene
+    var scene: EquipmentScene
     var onSave: (Equipment) -> Void
 
     @State private var name: String = ""

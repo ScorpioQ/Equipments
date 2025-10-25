@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct SceneRowView: View {
-    @ObservedObject var scene: Scene
+    @ObservedObject var scene: EquipmentScene
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -51,9 +51,9 @@ struct SceneRowView: View {
 
 #Preview {
     let context = PersistenceController.preview.container.viewContext
-    let request = Scene.fetchRequest()
+    let request = EquipmentScene.fetchRequest()
     request.fetchLimit = 1
-    let sampleScene = (try? context.fetch(request).first) ?? Scene(context: context)
+    let sampleScene = (try? context.fetch(request).first) ?? EquipmentScene(context: context)
     return SceneRowView(scene: sampleScene)
         .padding()
 }
