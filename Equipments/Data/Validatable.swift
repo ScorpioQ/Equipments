@@ -7,3 +7,4 @@ protocol Validatable {
     /// - Throws: 如果数据无效，抛出ValidationError
     func validate() throws
 }
+
