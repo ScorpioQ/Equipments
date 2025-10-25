@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Equipment" representedClassName="Equipment" syncable="YES" codeGenerationType="manual/none">
+        <attribute name="createdAt" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="currencyCode" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="NO" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" optional="NO" attributeType="String"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="price" optional="NO" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="purchaseDate" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="updatedAt" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="scene" optional="YES" toMany="NO" deletionRule="Nullify" destinationEntity="Scene" inverseName="equipments" inverseEntity="Scene"/>
+    </entity>
+    <entity name="Scene" representedClassName="Scene" syncable="YES" codeGenerationType="manual/none">
+        <attribute name="colorHex" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="NO" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" optional="NO" attributeType="String"/>
+        <relationship name="equipments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Equipment" inverseName="scene" inverseEntity="Equipment"/>
+    </entity>
+    <elements>
+        <element name="Equipment" positionX="160" positionY="160" width="128" height="135"/>
+        <element name="Scene" positionX="360" positionY="160" width="128" height="105"/>
+    </elements>
+</model>
