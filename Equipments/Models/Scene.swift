@@ -14,11 +14,11 @@ public extension Scene {
     @NSManaged var name: String
     @NSManaged var createdAt: Date
     @NSManaged var colorHex: String?
-    @NSManaged private var equipments: NSSet?
+    @NSManaged private var equipmentsStorage: NSSet?
 
     var equipmentSet: Set<Equipment> {
-        get { equipments as? Set<Equipment> ?? [] }
-        set { equipments = newValue as NSSet }
+        get { equipmentsStorage as? Set<Equipment> ?? [] }
+        set { equipmentsStorage = newValue as NSSet }
     }
 
     var equipmentsArray: [Equipment] {

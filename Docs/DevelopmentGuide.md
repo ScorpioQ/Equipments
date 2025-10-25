@@ -13,7 +13,7 @@
 | 装备管理 | - 列表浏览、搜索（待实现）<br>- 记录名称、价格、货币、购买日期、场景、备注<br>- 自动计算日均投入<br>- 详情页展示字段，支持编辑、删除 |
 | 场景管理 | - 自定义场景名称与标识颜色<br>- 统计场景内装备数、总投入、平均日均投入<br>- 支持场景详情页内直接新增装备 |
 | 设置 | - 手动切换应用语言（系统/简体/繁体/英文）<br>- iCloud 同步开关（切换后需重启 App）<br>- 版本信息、开发团队 |
-| 数据层 | - Core Data + NSPersistentCloudKitContainer<br>- 使用 `Equipments.xcdatamodeld` 管理实体结构，便于建表与版本迁移<br>- UserDefaults 存储语言、iCloud 开关、最近使用 Tab |
+| 数据层 | - Core Data + NSPersistentCloudKitContainer<br>- 运行时动态生成数据模型，避免依赖 .xcdatamodeld 文件<br>- UserDefaults 存储语言、iCloud 开关、最近使用 Tab |
 
 ## 三、代码结构
 ```
@@ -91,14 +91,13 @@ Equipments/
 
 ## 八、开发进度与计划
 
-### 8.1 已完成内容（2025-10-24~2025-10-25）
+### 8.1 已完成内容（2025-10-24）
 - **基础架构**：重建 SwiftUI + Core Data + CloudKit 持久层，提供预览数据与运行环境注入。
 - **界面结构**：实现基于 `RootView` 的 Tab 入口，包含装备、场景与设置三大入口。
 - **装备功能**：支持装备列表、详情、编辑表单，自动计算日均投入，并可关联场景。
 - **场景功能**：提供场景列表、详情页，展示场景内装备统计并支持新增/编辑场景。
 - **设置功能**：实现语言切换、iCloud 同步开关提示以及基础的关于信息展示。
 - **多语言**：提供简体中文、繁体中文、英文三份 `Localizable.strings`，覆盖现有界面。
-- **数据模型**：补充 `Equipments.xcdatamodeld`，与现有实体定义保持一致，方便阶段性测试与迁移管理。
 
 > 注：如需回溯具体实现，可参考 `App/RootView.swift`、`Views/Equipment/*`、`Views/Scene/*` 与 `Views/Settings/SettingsView.swift` 等文件。
 
@@ -121,7 +120,6 @@ Equipments/
 | ---- | ---- | ---- |
 | 2025-10-24 | v0.1 基础搭建 | 完成核心数据模型、Tab 结构、主要页面与多语言配置。 |
 | 2025-10-24 | v0.1.1 列表修正 | 修复场景列表的 Core Data 依赖及导航绑定，统一使用 `objectID` 作为标识。 |
-| 2025-10-25 | v0.2 数据模型固化 | 新增 `Equipments.xcdatamodeld`，并更新持久化控制器以使用静态模型文件。 |
 | （待更新） | 下一迭代 | 完成后将补充具体内容与日期。 |
 
 ---

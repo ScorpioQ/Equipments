@@ -48,22 +48,18 @@ final class PersistenceController {
             }
         }
 
-        container = NSPersistentCloudKitContainer(name: "Equipments")
-
-        let description: NSPersistentStoreDescription
-        if let existingDescription = container.persistentStoreDescriptions.first {
-            description = existingDescription
-        } else {
-            description = NSPersistentStoreDescription()
-        }
-
-        description.shouldAddStoreAsynchronously = false
+        let model = PersistenceController.makeManagedObjectModel()
+        container = NSPersistentCloudKitContainer(name: "Equipments", managedObjectModel: model)
 
         if inMemory {
+            let description = NSPersistentStoreDescription()
             description.type = NSInMemoryStoreType
-            description.url = URL(fileURLWithPath: "/dev/null")
+            description.shouldAddStoreAsynchronously = false
+            container.persistentStoreDescriptions = [description]
         } else {
+            let description = NSPersistentStoreDescription()
             description.type = NSSQLiteStoreType
+            description.shouldAddStoreAsynchronously = false
             description.url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("Equipments.sqlite")
 
             if useCloudKit {
@@ -71,12 +67,10 @@ final class PersistenceController {
                 description.cloudKitContainerOptions = options
                 description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
                 description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
-            } else {
-                description.cloudKitContainerOptions = nil
             }
-        }
 
-        container.persistentStoreDescriptions = [description]
+            container.persistentStoreDescriptions = [description]
+        }
 
         container.loadPersistentStores { _, error in
             if let error {
@@ -97,5 +91,116 @@ final class PersistenceController {
             context.rollback()
             assertionFailure("Unresolved Core Data error: \(error)")
         }
+    }
+}
+
+private extension PersistenceController {
+    static func makeManagedObjectModel() -> NSManagedObjectModel {
+        let model = NSManagedObjectModel()
+
+        let sceneEntity = NSEntityDescription()
+        sceneEntity.name = "Scene"
+        sceneEntity.managedObjectClassName = NSStringFromClass(Scene.self)
+
+        let sceneId = NSAttributeDescription()
+        sceneId.name = "id"
+        sceneId.attributeType = .UUIDAttributeType
+        sceneId.isOptional = false
+
+        let sceneName = NSAttributeDescription()
+        sceneName.name = "name"
+        sceneName.attributeType = .stringAttributeType
+        sceneName.isOptional = false
+
+        let sceneCreatedAt = NSAttributeDescription()
+        sceneCreatedAt.name = "createdAt"
+        sceneCreatedAt.attributeType = .dateAttributeType
+        sceneCreatedAt.isOptional = false
+
+        let sceneColorHex = NSAttributeDescription()
+        sceneColorHex.name = "colorHex"
+        sceneColorHex.attributeType = .stringAttributeType
+        sceneColorHex.isOptional = true
+
+        sceneEntity.properties = [sceneId, sceneName, sceneCreatedAt, sceneColorHex]
+
+        let equipmentEntity = NSEntityDescription()
+        equipmentEntity.name = "Equipment"
+        equipmentEntity.managedObjectClassName = NSStringFromClass(Equipment.self)
+
+        let equipmentId = NSAttributeDescription()
+        equipmentId.name = "id"
+        equipmentId.attributeType = .UUIDAttributeType
+        equipmentId.isOptional = false
+
+        let equipmentName = NSAttributeDescription()
+        equipmentName.name = "name"
+        equipmentName.attributeType = .stringAttributeType
+        equipmentName.isOptional = false
+
+        let equipmentPrice = NSAttributeDescription()
+        equipmentPrice.name = "price"
+        equipmentPrice.attributeType = .doubleAttributeType
+        equipmentPrice.isOptional = false
+        equipmentPrice.defaultValue = 0
+
+        let equipmentCurrency = NSAttributeDescription()
+        equipmentCurrency.name = "currencyCode"
+        equipmentCurrency.attributeType = .stringAttributeType
+        equipmentCurrency.isOptional = true
+
+        let equipmentPurchaseDate = NSAttributeDescription()
+        equipmentPurchaseDate.name = "purchaseDate"
+        equipmentPurchaseDate.attributeType = .dateAttributeType
+        equipmentPurchaseDate.isOptional = false
+
+        let equipmentCreatedAt = NSAttributeDescription()
+        equipmentCreatedAt.name = "createdAt"
+        equipmentCreatedAt.attributeType = .dateAttributeType
+        equipmentCreatedAt.isOptional = false
+
+        let equipmentUpdatedAt = NSAttributeDescription()
+        equipmentUpdatedAt.name = "updatedAt"
+        equipmentUpdatedAt.attributeType = .dateAttributeType
+        equipmentUpdatedAt.isOptional = false
+
+        let equipmentNotes = NSAttributeDescription()
+        equipmentNotes.name = "notes"
+        equipmentNotes.attributeType = .stringAttributeType
+        equipmentNotes.isOptional = true
+
+        let sceneRelationship = NSRelationshipDescription()
+        sceneRelationship.name = "scene"
+        sceneRelationship.destinationEntity = sceneEntity
+        sceneRelationship.maxCount = 1
+        sceneRelationship.minCount = 0
+        sceneRelationship.deleteRule = .nullifyDeleteRule
+
+        let equipmentRelationship = NSRelationshipDescription()
+        equipmentRelationship.name = "equipments"
+        equipmentRelationship.destinationEntity = equipmentEntity
+        equipmentRelationship.minCount = 0
+        equipmentRelationship.maxCount = 0
+        equipmentRelationship.deleteRule = .cascadeDeleteRule
+
+        sceneRelationship.inverseRelationship = equipmentRelationship
+        equipmentRelationship.inverseRelationship = sceneRelationship
+
+        equipmentEntity.properties = [
+            equipmentId,
+            equipmentName,
+            equipmentPrice,
+            equipmentCurrency,
+            equipmentPurchaseDate,
+            equipmentCreatedAt,
+            equipmentUpdatedAt,
+            equipmentNotes,
+            sceneRelationship
+        ]
+
+        sceneEntity.properties.append(equipmentRelationship)
+
+        model.entities = [sceneEntity, equipmentEntity]
+        return model
     }
 }
