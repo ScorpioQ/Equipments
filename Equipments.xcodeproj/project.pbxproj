@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+               CCB4770D2D0F3F8A00A2B3A8 /* Equipments.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CCB4770B2D0F3F8A00A2B3A8 /* Equipments.xcdatamodeld */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		558C417D2CF0C5FD00C98806 /* Equipments.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Equipments.app; sourceTree = BUILT_PRODUCTS_DIR; };
+               558C417D2CF0C5FD00C98806 /* Equipments.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Equipments.app; sourceTree = BUILT_PRODUCTS_DIR; };
+               CCB4770C2D0F3F8A00A2B3A8 /* Equipments.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Equipments.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -42,14 +47,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		558C41742CF0C5FD00C98806 = {
-			isa = PBXGroup;
-			children = (
-				558C417F2CF0C5FD00C98806 /* Equipments */,
-				558C417E2CF0C5FD00C98806 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
+                558C41742CF0C5FD00C98806 = {
+                        isa = PBXGroup;
+                        children = (
+                                558C417F2CF0C5FD00C98806 /* Equipments */,
+                                558C417E2CF0C5FD00C98806 /* Products */,
+                                CCB4770B2D0F3F8A00A2B3A8 /* Equipments.xcdatamodeld */,
+                        );
+                        sourceTree = "<group>";
+                };
 		558C417E2CF0C5FD00C98806 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,14 +136,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		558C41792CF0C5FD00C98806 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+                558C41792CF0C5FD00C98806 /* Sources */ = {
+                        isa = PBXSourcesBuildPhase;
+                        buildActionMask = 2147483647;
+                        files = (
+                                CCB4770D2D0F3F8A00A2B3A8 /* Equipments.xcdatamodeld in Sources */,
+                        );
+                        runOnlyForDeploymentPostprocessing = 0;
+                };
 /* End PBXSourcesBuildPhase section */
+
+/* Begin XCVersionGroup section */
+               CCB4770B2D0F3F8A00A2B3A8 /* Equipments.xcdatamodeld */ = {
+                        isa = XCVersionGroup;
+                        children = (
+                                CCB4770C2D0F3F8A00A2B3A8 /* Equipments.xcdatamodel */,
+                        );
+                        currentVersion = CCB4770C2D0F3F8A00A2B3A8 /* Equipments.xcdatamodel */;
+                        path = Equipments.xcdatamodeld;
+                        sourceTree = "<group>";
+                        versionGroupType = wrapper.xcdatamodel;
+                };
+/* End XCVersionGroup section */
 
 /* Begin XCBuildConfiguration section */
 		558C418F2CF0C60000C98806 /* Debug */ = {
