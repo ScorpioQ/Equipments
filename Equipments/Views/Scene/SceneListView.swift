@@ -1,4 +1,3 @@
-import CoreData
 import SwiftUI
 
 struct SceneListView: View {
@@ -21,7 +20,7 @@ struct SceneListView: View {
                     )
                 } else {
                     List {
-                        ForEach(scenes, id: \.objectID) { scene in
+                        ForEach(scenes) { scene in
                             NavigationLink(value: scene.objectID) {
                                 SceneRowView(scene: scene)
                             }
