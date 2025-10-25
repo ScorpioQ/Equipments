@@ -57,7 +57,7 @@ struct EquipmentEditorView: View {
 
                 Picker("equipments.form.scene", selection: $selectedSceneID) {
                     Text("common.none").tag(nil as NSManagedObjectID?)
-                    ForEach(scenes) { scene in
+                    ForEach(scenes, id: \.objectID) { scene in
                         Text(scene.name).tag(scene.objectID as NSManagedObjectID?)
                     }
                 }

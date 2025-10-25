@@ -1,3 +1,4 @@
+import CoreData
 import SwiftUI
 
 struct EquipmentListView: View {
@@ -21,7 +22,7 @@ struct EquipmentListView: View {
                     )
                 } else {
                     List {
-                        ForEach(equipments) { equipment in
+                        ForEach(equipments, id: \.objectID) { equipment in
                             NavigationLink(value: equipment.objectID) {
                                 EquipmentRowView(equipment: equipment)
                             }

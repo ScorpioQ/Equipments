@@ -1,3 +1,4 @@
+import CoreData
 import SwiftUI
 
 struct SceneDetailView: View {
@@ -30,7 +31,7 @@ struct SceneDetailView: View {
                     Text("scenes.empty.equipments")
                         .foregroundStyle(.secondary)
                 } else {
-                    ForEach(scene.equipmentsArray) { equipment in
+                    ForEach(scene.equipmentsArray, id: \.objectID) { equipment in
                         NavigationLink(value: equipment.objectID) {
                             EquipmentRowView(equipment: equipment)
                         }
