@@ -1,5 +1,4 @@
 import SwiftUI
-import CoreData
 
 struct EquipmentEditorView: View {
     @Environment(\.managedObjectContext) private var context
@@ -56,7 +55,7 @@ struct EquipmentEditorView: View {
                 DatePicker("equipments.form.purchaseDate", selection: $purchaseDate, displayedComponents: .date)
 
                 Picker("equipments.form.scene", selection: $selectedSceneID) {
-                    Text("common.none").tag(nil as NSManagedObjectID?)
+                    Text("common.none").tag(NSManagedObjectID?.none)
                     ForEach(scenes) { scene in
                         Text(scene.name).tag(scene.objectID as NSManagedObjectID?)
                     }
