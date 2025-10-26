@@ -9,6 +9,11 @@ import SwiftUI
 
 struct EquipmentRowView: View {
     @ObservedObject var equipment: Equipment
+    @Environment(\.locale) private var locale
+
+    private var currencyCode: String {
+        locale.currency?.identifier ?? Locale.autoupdatingCurrent.currency?.identifier ?? "CNY"
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -16,28 +21,28 @@ struct EquipmentRowView: View {
                 Text(equipment.wrappedName)
                     .font(.headline)
                 Spacer()
-                Text(equipment.dailyCost, format: .currency(code: Locale.current.currency?.identifier ?? "CNY"))
+                Text(equipment.dailyCost, format: .currency(code: currencyCode))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
 
             HStack(spacing: 12) {
-                Label("购入", systemImage: "tag")
+                Label("equipment.row.purchase", systemImage: "tag")
                     .labelStyle(.iconOnly)
                     .foregroundStyle(.secondary)
-                Text(equipment.purchasePrice, format: .currency(code: Locale.current.currency?.identifier ?? "CNY"))
+                Text(equipment.purchasePrice, format: .currency(code: currencyCode))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
 
-                Label("天数", systemImage: "clock")
+                Label("equipment.row.days", systemImage: "clock")
                     .labelStyle(.iconOnly)
                     .foregroundStyle(.secondary)
-                Text("\(equipment.heldDays) 天")
+                Text("equipment.row.held.days \(equipment.heldDays)")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
 
                 if equipment.isActive == false {
-                    Label("已停用", systemImage: "pause.circle")
+                    Label("equipment.row.inactive", systemImage: "pause.circle")
                         .font(.footnote)
                         .foregroundStyle(.orange)
                 }

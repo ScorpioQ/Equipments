@@ -10,6 +10,11 @@ import CoreData
 
 struct SceneRowView: View {
     @ObservedObject var scene: EquipmentScene
+    @Environment(\.locale) private var locale
+
+    private var currencyCode: String {
+        locale.currency?.identifier ?? Locale.autoupdatingCurrent.currency?.identifier ?? "CNY"
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -17,21 +22,21 @@ struct SceneRowView: View {
                 Text(scene.wrappedName)
                     .font(.headline)
                 Spacer()
-                Text("共 \(scene.equipmentsArray.count) 件装备")
+                Text("scene.row.equipment.count \(scene.equipmentsArray.count)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
 
             HStack(spacing: 16) {
                 Label {
-                    Text(scene.totalInvestment, format: .currency(code: Locale.current.currency?.identifier ?? "CNY"))
+                    Text(scene.totalInvestment, format: .currency(code: currencyCode))
                 } icon: {
                     Image(systemName: "creditcard")
                 }
                 .font(.footnote)
 
                 Label {
-                    Text(scene.averageDailyCost, format: .currency(code: Locale.current.currency?.identifier ?? "CNY"))
+                    Text(scene.averageDailyCost, format: .currency(code: currencyCode))
                 } icon: {
                     Image(systemName: "calendar")
                 }

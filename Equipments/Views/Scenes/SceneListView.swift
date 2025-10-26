@@ -24,9 +24,9 @@ struct SceneListView: View {
             Group {
                 if scenes.isEmpty {
                     ContentUnavailableView(
-                        "还没有场景",
+                        "scene.list.empty.title",
                         systemImage: "rectangle.on.rectangle.slash",
-                        description: Text("创建第一个场景，开始记录你的装备组合")
+                        description: Text("scene.list.empty.description")
                     )
                 } else {
                     List {
@@ -40,11 +40,11 @@ struct SceneListView: View {
                     }
                 }
             }
-            .navigationTitle("场景")
+            .navigationTitle("scene.navigation.title")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { isPresentingCreateSheet = true }) {
-                        Label("新增场景", systemImage: "plus")
+                        Label("scene.list.add", systemImage: "plus")
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -63,7 +63,7 @@ struct SceneListView: View {
                 if let scene = try? viewContext.existingObject(with: objectID) as? EquipmentScene {
                     SceneDetailView(scene: scene)
                 } else {
-                    Text("无法找到场景")
+                    Text("scene.navigation.fallback")
                 }
             }
         }
@@ -97,18 +97,23 @@ private struct SceneFormView: View {
 
     var body: some View {
         Form {
-            Section("场景信息") {
-                TextField("场景名称", text: $name)
-                TextField("简介", text: $summary, axis: .vertical)
+            Section(Text("scene.form.info")) {
+                TextField("scene.form.name", text: $name)
+                TextField(
+                    "scene.form.summary",
+                    text: $summary,
+                    axis: .vertical,
+                    prompt: Text("scene.form.summary.placeholder")
+                )
             }
         }
-        .navigationTitle("新建场景")
+        .navigationTitle("scene.form.title")
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("取消") { dismiss() }
+                Button("action.cancel") { dismiss() }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("保存") {
+                Button("action.save") {
                     let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
                     onSave(trimmed, summary)
                     dismiss()

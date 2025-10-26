@@ -8,18 +8,29 @@
 import SwiftUI
 
 struct RootView: View {
+    @AppStorage("selectedLanguage") private var selectedLanguageValue = AppLanguage.system.rawValue
+
+    private var selectedLanguage: AppLanguage {
+        AppLanguage.fromPersistedValue(selectedLanguageValue)
+    }
+
+    private var selectedLocale: Locale {
+        selectedLanguage.locale ?? .autoupdatingCurrent
+    }
+
     var body: some View {
         TabView {
             SceneListView()
                 .tabItem {
-                    Label("场景", systemImage: "rectangle.3.group")
+                    Label("tab.scenes", systemImage: "rectangle.3.group")
                 }
 
             SettingsView()
                 .tabItem {
-                    Label("设置", systemImage: "gearshape")
+                    Label("tab.settings", systemImage: "gearshape")
                 }
         }
+        .environment(\.locale, selectedLocale)
     }
 }
 

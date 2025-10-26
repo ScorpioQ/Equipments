@@ -16,16 +16,16 @@ struct SceneDetailView: View {
 
     var body: some View {
         List {
-            Section(header: Text("场景概览")) {
+            Section(header: Text("scene.detail.section.overview")) {
                 SceneSummaryView(scene: scene)
             }
 
-            Section(header: Text("装备")) {
+            Section(header: Text("scene.detail.section.equipments")) {
                 if scene.equipmentsArray.isEmpty {
                     ContentUnavailableView(
-                        "暂无装备",
+                        "scene.detail.empty.title",
                         systemImage: "shippingbox",
-                        description: Text("添加装备以开始计算日均投入")
+                        description: Text("scene.detail.empty.description")
                     )
                 } else {
                     ForEach(scene.equipmentsArray) { equipment in
@@ -39,7 +39,7 @@ struct SceneDetailView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { isPresentingEquipmentSheet = true }) {
-                    Label("新增装备", systemImage: "plus")
+                    Label("scene.detail.add.equipment", systemImage: "plus")
                 }
             }
         }
@@ -62,25 +62,30 @@ struct SceneDetailView: View {
 
 private struct SceneSummaryView: View {
     @ObservedObject var scene: EquipmentScene
+    @Environment(\.locale) private var locale
+
+    private var currencyCode: String {
+        locale.currency?.identifier ?? Locale.autoupdatingCurrent.currency?.identifier ?? "CNY"
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Label("总投入", systemImage: "creditcard.fill")
-                Spacer()
-                Text(scene.totalInvestment, format: .currency(code: Locale.current.currency?.identifier ?? "CNY"))
+            LabeledContent {
+                Text(scene.totalInvestment, format: .currency(code: currencyCode))
+            } label: {
+                Label("scene.detail.total.investment", systemImage: "creditcard.fill")
             }
 
-            HStack {
-                Label("平均日均成本", systemImage: "calendar")
-                Spacer()
-                Text(scene.averageDailyCost, format: .currency(code: Locale.current.currency?.identifier ?? "CNY"))
+            LabeledContent {
+                Text(scene.averageDailyCost, format: .currency(code: currencyCode))
+            } label: {
+                Label("scene.detail.average.daily.cost", systemImage: "calendar")
             }
 
-            HStack {
-                Label("在用装备", systemImage: "checkmark.circle")
-                Spacer()
-                Text("\(scene.activeEquipmentCount) 件")
+            LabeledContent {
+                Text(scene.activeEquipmentCount, format: .number)
+            } label: {
+                Label("scene.detail.active.count", systemImage: "checkmark.circle")
             }
         }
         .font(.subheadline)
@@ -104,30 +109,41 @@ private struct EquipmentFormView: View {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = 2
+        formatter.locale = .autoupdatingCurrent
         return formatter
     }()
 
     var body: some View {
         Form {
-            Section("基本信息") {
-                TextField("装备名称", text: $name)
-                TextField("购买价格", value: $price, formatter: formatter)
+            Section(Text("equipment.form.section.basic")) {
+                TextField("equipment.form.name", text: $name)
+                TextField(
+                    "equipment.form.price",
+                    value: $price,
+                    formatter: formatter,
+                    prompt: Text("equipment.form.price.placeholder")
+                )
                     .keyboardType(.decimalPad)
-                DatePicker("购买日期", selection: $purchaseDate, displayedComponents: .date)
-                Toggle("仍在使用", isOn: $isActive)
+                DatePicker("equipment.form.date", selection: $purchaseDate, displayedComponents: .date)
+                Toggle("equipment.form.active", isOn: $isActive)
             }
 
-            Section("备注") {
-                TextField("补充信息", text: $notes, axis: .vertical)
+            Section(Text("equipment.form.section.notes")) {
+                TextField(
+                    "equipment.form.notes",
+                    text: $notes,
+                    axis: .vertical,
+                    prompt: Text("equipment.form.notes.placeholder")
+                )
             }
         }
-        .navigationTitle("新增装备")
+        .navigationTitle("scene.detail.add.equipment")
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("取消") { dismiss() }
+                Button("action.cancel") { dismiss() }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("保存") {
+                Button("action.save") {
                     let equipment = Equipment(context: viewContext)
                     equipment.id = UUID()
                     equipment.name = name.trimmingCharacters(in: .whitespacesAndNewlines)

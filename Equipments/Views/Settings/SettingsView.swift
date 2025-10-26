@@ -8,45 +8,56 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var selectedLanguage: AppLanguage = .system
+    @AppStorage("selectedLanguage") private var selectedLanguageValue = AppLanguage.system.rawValue
     @State private var lastSyncDate: Date? = nil
     @State private var isSyncing: Bool = false
+
+    private var languageBinding: Binding<AppLanguage> {
+        Binding(
+            get: { AppLanguage.fromPersistedValue(selectedLanguageValue) },
+            set: { selectedLanguageValue = $0.rawValue }
+        )
+    }
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("语言") {
-                    Picker("应用语言", selection: $selectedLanguage) {
+                Section(Text("settings.section.language")) {
+                    Picker("settings.language.picker", selection: languageBinding) {
                         ForEach(AppLanguage.allCases) { language in
-                            Text(language.displayName).tag(language)
+                            Text(language.localizedTitleKey).tag(language)
                         }
                     }
-                    Text("语言切换功能将在后续迭代中接入实际多语言资源。")
+                    Text("settings.language.description")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
 
-                Section("iCloud 同步") {
+                Section(Text("settings.section.sync")) {
                     if isSyncing {
-                        ProgressView("正在同步…")
+                        ProgressView("settings.sync.in.progress")
                     } else {
-                        Button("手动触发同步") {
+                        Button("settings.sync.trigger") {
                             triggerSync()
                         }
                     }
 
                     if let lastSyncDate {
-                        Text("最后同步时间：\(lastSyncDate.formatted(date: .abbreviated, time: .shortened))")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
+                        LabeledContent {
+                            Text(lastSyncDate, format: .dateTime.year().month().day().hour().minute())
+                        } label: {
+                            Text("settings.sync.last")
+                        }
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                     } else {
-                        Text("尚未同步")
+                        Text("settings.sync.never")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
                 }
             }
-            .navigationTitle("设置")
+            .navigationTitle("settings.navigation.title")
         }
     }
 
@@ -57,30 +68,6 @@ struct SettingsView: View {
             isSyncing = false
         }
     }
-}
-
-enum AppLanguage: String, CaseIterable, Identifiable {
-    case system
-    case simplifiedChinese
-    case traditionalChinese
-    case english
-
-    var id: String { rawValue }
-
-    var displayName: String {
-        switch self {
-        case .system:
-            return "跟随系统"
-        case .simplifiedChinese:
-            return "简体中文"
-        case .traditionalChinese:
-            return "繁體中文"
-        case .english:
-            return "English"
-        }
-    }
-}
-
 #Preview {
     SettingsView()
 }
